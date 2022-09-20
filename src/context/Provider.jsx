@@ -4,20 +4,28 @@ import fecthPlanets from '../services/fetchPlanets';
 import planetsContext from './planetsContext';
 
 export default function Provider({ children }) {
-  const [state, setState] = useState([]);
+  const [planets, setPlanets] = useState([]);
+  const [nameFilter, setNameFilter] = useState('');
 
   useEffect(() => {
     const fetchAPI = async () => {
       const response = await fecthPlanets();
       response.forEach((element) => delete element.residents);
-      console.log(response);
-      setState(response);
+      setPlanets(response);
     };
     fetchAPI();
   }, []);
 
+  const context = {
+    planets,
+    nameFilter: {
+      name: nameFilter,
+      setNameFilter,
+    },
+  };
+
   return (
-    <planetsContext.Provider value={ state }>
+    <planetsContext.Provider value={ context }>
       { children }
     </planetsContext.Provider>
   );
