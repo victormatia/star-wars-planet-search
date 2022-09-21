@@ -7,13 +7,13 @@ const initialsNumericFilters = {
   parameter: 'population',
   operator: 'maior que',
   estimatedValue: '0',
-  wasSearchedByNumericFilters: false,
 };
 
 export default function Provider({ children }) {
   const [planets, setPlanets] = useState([]);
   const [nameFilter, setNameFilter] = useState('');
   const [numericFilters, setNumericFilters] = useState(initialsNumericFilters);
+  const [applyFilters, setApplyFilters] = useState([]);
 
   useEffect(() => {
     const fetchAPI = async () => {
@@ -33,6 +33,10 @@ export default function Provider({ children }) {
     numericFilters: {
       filters: numericFilters,
       setNumericFilters,
+    },
+    applyFilters: {
+      applyFilters,
+      setApplyFilters,
     },
   };
 

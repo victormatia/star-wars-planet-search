@@ -2,7 +2,12 @@ import React, { useContext } from 'react';
 import planetsContext from '../context/planetsContext';
 
 export default function FormNumericFilters() {
-  const { numericFilters: { filters, setNumericFilters } } = useContext(planetsContext);
+  const {
+    numericFilters: {
+      filters, filters: { parameter, operator, estimatedValue }, setNumericFilters,
+    },
+    applyFilters: { applyFilters, setApplyFilters },
+  } = useContext(planetsContext);
 
   const onChange = ({ target }) => {
     setNumericFilters({
@@ -13,10 +18,7 @@ export default function FormNumericFilters() {
 
   const onClick = (event) => {
     event.preventDefault();
-    setNumericFilters({
-      ...filters,
-      wasSearchedByNumericFilters: true,
-    });
+    setApplyFilters([...applyFilters, { parameter, operator, estimatedValue }]);
   };
 
   return (

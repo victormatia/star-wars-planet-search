@@ -5,32 +5,42 @@ export default function Table() {
   const {
     planets,
     nameFilter: { name },
-    numericFilters: { filters },
+    applyFilters: { applyFilters },
   } = useContext(planetsContext);
 
   const filterByName = (planetsArray) => planetsArray
     .filter((planet) => planet.name.toLowerCase().includes(name));
 
-  const filterByNumericFilters = (planetsArray, numericFilters) => {
-    switch (numericFilters.operator) {
-    case 'maior que': return planetsArray.filter((planet) => (
-      Number(planet[numericFilters.parameter]) > Number(numericFilters.estimatedValue)));
+  const filterByNumericFilters = (
+    planetsArray,
+    numericFilters,
+  ) => (
+    numericFilters.reduce((acc, curr) => (
+      acc.filter((planet) => {
+        switch (curr.operator) {
+        case 'maior que': {
+          return Number(planet[curr.parameter]) > Number(curr.estimatedValue);
+        }
+        case 'menor que': {
+          return Number(planet[curr.parameter]) < Number(curr.estimatedValue);
+        }
+        case 'igual a': {
+          return Number(planet[curr.parameter])
+                  === Number(curr.estimatedValue);
+        }
+        default: return acc;
+        }
+      })
+    ), planetsArray)
+  );
 
-    case 'menor que': return planetsArray.filter((planet) => (
-      Number(planet[numericFilters.parameter]) < Number(numericFilters.estimatedValue)));
-
-    case 'igual a': return planetsArray.filter((planet) => (
-      Number(planet[numericFilters.parameter])
-      === Number(numericFilters.estimatedValue)));
-
-    default: return planetsArray;
+  const filter = (searchName, applyFiltersArr, planetsArr) => {
+    if (applyFiltersArr.length > 0 && searchName.length > 0) {
+      return filterByName(filterByNumericFilters(planetsArr, applyFiltersArr));
     }
-  };
-
-  const filter = (searchName, numericFilters) => {
-    if (searchName.length > 0) return filterByName(planets);
-    if (numericFilters.wasSearchedByNumericFilters) {
-      return filterByNumericFilters(planets, filters);
+    if (searchName.length > 0) return filterByName(planetsArr);
+    if (applyFiltersArr.length > 0) {
+      return filterByNumericFilters(planetsArr, applyFiltersArr);
     }
     return planets;
   };
@@ -55,7 +65,7 @@ export default function Table() {
         </tr>
       </thead>
       <tbody>
-        { planets.length ? filter(name, filters).map((planet) => (
+        { planets.length ? filter(name, applyFilters, planets)?.map((planet) => (
           <tr key={ planet.name }>
             <td>{ planet.name }</td>
             <td>{ planet.rotation_period }</td>

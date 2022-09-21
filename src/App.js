@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import FiltersIndicator from './components/FiltersIndicator';
 import FormNumericFilters from './components/FormNumericFilters';
 import FormSearchByName from './components/FormSearchByName';
 import Table from './components/Table';
@@ -11,6 +12,7 @@ function App() {
       <h1>Project Star Wars</h1>
       <FormSearchByName />
       <FormNumericFilters />
+      <FiltersIndicator />
       <Table />
     </Provider>
   );
