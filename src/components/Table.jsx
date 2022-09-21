@@ -2,12 +2,38 @@ import React, { useContext } from 'react';
 import planetsContext from '../context/planetsContext';
 
 export default function Table() {
-  const { planets, nameFilter: { name } } = useContext(planetsContext);
+  const {
+    planets,
+    nameFilter: { name },
+    numericFilters: { filters },
+  } = useContext(planetsContext);
 
   const filterByName = (planetsArray) => planetsArray
     .filter((planet) => planet.name.toLowerCase().includes(name));
 
-  const filter = name.length > 0 ? filterByName(planets) : planets;
+  const filterByNumericFilters = (planetsArray, numericFilters) => {
+    switch (numericFilters.operator) {
+    case 'maior que': return planetsArray.filter((planet) => (
+      Number(planet[numericFilters.parameter]) > Number(numericFilters.estimatedValue)));
+
+    case 'menor que': return planetsArray.filter((planet) => (
+      Number(planet[numericFilters.parameter]) < Number(numericFilters.estimatedValue)));
+
+    case 'igual a': return planetsArray.filter((planet) => (
+      Number(planet[numericFilters.parameter])
+      === Number(numericFilters.estimatedValue)));
+
+    default: return planetsArray;
+    }
+  };
+
+  const filter = (searchName, numericFilters) => {
+    if (searchName.length > 0) return filterByName(planets);
+    if (numericFilters.wasSearchedByNumericFilters) {
+      return filterByNumericFilters(planets, filters);
+    }
+    return planets;
+  };
 
   return (
     <table>
@@ -29,7 +55,7 @@ export default function Table() {
         </tr>
       </thead>
       <tbody>
-        { planets.length ? filter.map((planet) => (
+        { planets.length ? filter(name, filters).map((planet) => (
           <tr key={ planet.name }>
             <td>{ planet.name }</td>
             <td>{ planet.rotation_period }</td>

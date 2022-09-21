@@ -3,9 +3,17 @@ import React, { useEffect, useState } from 'react';
 import fecthPlanets from '../services/fetchPlanets';
 import planetsContext from './planetsContext';
 
+const initialsNumericFilters = {
+  parameter: 'population',
+  operator: 'maior que',
+  estimatedValue: '0',
+  wasSearchedByNumericFilters: false,
+};
+
 export default function Provider({ children }) {
   const [planets, setPlanets] = useState([]);
   const [nameFilter, setNameFilter] = useState('');
+  const [numericFilters, setNumericFilters] = useState(initialsNumericFilters);
 
   useEffect(() => {
     const fetchAPI = async () => {
@@ -21,6 +29,10 @@ export default function Provider({ children }) {
     nameFilter: {
       name: nameFilter,
       setNameFilter,
+    },
+    numericFilters: {
+      filters: numericFilters,
+      setNumericFilters,
     },
   };
 

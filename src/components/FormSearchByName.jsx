@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import planetsContext from '../context/planetsContext';
 
-export default function Form() {
+export default function FormSearchByName() {
   const { nameFilter: { name, setNameFilter } } = useContext(planetsContext);
 
   const onChange = ({ target }) => {
