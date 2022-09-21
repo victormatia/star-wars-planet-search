@@ -11,12 +11,10 @@ export default function FiltersIndicator() {
   return (
     <section>
       { applyFilters.map((filter, i) => (
-        <div key={ i }>
-          <span>
-            {
-              `Filtro: ${filter.parameter} ${filter.operator} ${filter.estimatedValue}`
-            }
-          </span>
+        <div key={ i } data-testid="filter">
+          {
+            `Filtro: ${filter.parameter} ${filter.operator} ${filter.estimatedValue}`
+          }
           <button
             name={ filter.parameter }
             type="button"

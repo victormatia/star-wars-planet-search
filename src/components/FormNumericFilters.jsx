@@ -1,7 +1,17 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import planetsContext from '../context/planetsContext';
 
+const INITIAL_FILTERS = [
+  'population',
+  'orbital_period',
+  'diameter',
+  'rotation_period',
+  'surface_water',
+];
+
 export default function FormNumericFilters() {
+  const [allFilters, setAllFilters] = useState(INITIAL_FILTERS);
+
   const {
     numericFilters: {
       filters, filters: { parameter, operator, estimatedValue }, setNumericFilters,
@@ -16,6 +26,15 @@ export default function FormNumericFilters() {
     });
   };
 
+  useEffect(() => {
+    if (applyFilters.length > 0) {
+      const filtersNameApply = applyFilters.map((filter) => filter.parameter);
+      setAllFilters(allFilters.filter((filter) => !(filtersNameApply.includes(filter))));
+    } else {
+      setAllFilters(INITIAL_FILTERS);
+    }
+  }, [applyFilters]); // eslint-disable-line
+
   const onClick = (event) => {
     event.preventDefault();
     setApplyFilters([...applyFilters, { parameter, operator, estimatedValue }]);
@@ -29,11 +48,8 @@ export default function FormNumericFilters() {
         onChange={ onChange }
         data-testid="column-filter"
       >
-        <option value="population">population</option>
-        <option value="orbital_period">orbital_period</option>
-        <option value="diameter">diameter</option>
-        <option value="rotation_period">rotation_period</option>
-        <option value="surface_water">surface_water</option>
+        { allFilters
+          .map((filter) => <option key={ filter } value={ filter }>{ filter }</option>) }
       </select>
       <select
         name="operator"
