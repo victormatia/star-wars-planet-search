@@ -2,18 +2,17 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import App from '../App';
 import mockFetchPlanets from './helpers/mockFetchPlanets';
-
-const ROW_NAME_THEAD = "Name Rotation Priod Orbital Priod Diamiter Climate Gravity Terrain Surface Water Population Films Created Edited URL"
+import userEvent from '@testing-library/user-event';
 
 describe('Implementa casos de testes na aplicação', () => {
-  it('Testa se a tela inicial é renderizada corretamente', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue(mockFetchPlanets),
-    })
 
+  beforeEach(() => global.fetch = jest.fn().mockResolvedValue({
+    json: jest.fn().mockResolvedValue(mockFetchPlanets),
+  }))
+
+  it('Testa se a tela inicial é renderizada corretamente', async () => {
     render(<App />)
 
-    screen.debug();
     const title = screen.getByRole('heading', { level: 1, name: /project star wars/i });
     const inputName = screen.getByTestId(/name-filter/i)
     const inputParameters = screen.getByTestId(/column-filter/i)
@@ -33,5 +32,55 @@ describe('Implementa casos de testes na aplicação', () => {
       expect(rows).toHaveLength(11)
     })
 
+  });
+
+  it('Testa se é possível filtrar a lista de planetas por nome', async() => {
+    render(<App />)
+
+    const inputName = screen.getByTestId(/name-filter/i);
+    userEvent.type(inputName, 'oo');
+
+    await waitFor(() => {
+      const rows = screen.getAllByRole('row');
+      expect(rows).toHaveLength(3);
+    })
+
+    userEvent.clear(inputName);
+
+    await waitFor(() => {
+      const rows = screen.getAllByRole('row');
+      expect(rows).toHaveLength(11);
+    })
+
+    userEvent.type(inputName, 'alderaan');
+
+    await waitFor(() => {
+      const rows = screen.getAllByRole('row');
+      expect(rows).toHaveLength(2);
+    })
+  })
+
+  it('Testa se é possível aplicar filtros numéricos', async() => {
+    render(<App />)
+
+    const inputParameters = screen.getByTestId(/column-filter/i);
+    const diameterOption = screen.getByRole('option', { name: /diameter/i });
+    userEvent.selectOptions(inputParameters, diameterOption);
+
+    const inputOperators = screen.getByTestId(/comparison-filter/i);
+    const biggerThanOption = screen.getByRole('option', { name: /maior que/i });
+    userEvent.selectOptions(inputOperators, biggerThanOption);
+
+    const inputEstimatedValue = screen.getByTestId(/value-filter/i);
+    userEvent.clear(inputEstimatedValue);
+    userEvent.type(inputEstimatedValue, '8900');
+
+    const filterButton = screen.getByTestId(/button-filter/i);
+    userEvent.click(filterButton);
+
+    await waitFor(() => {
+      const rows = screen.getAllByRole('row');
+      expect(rows).toHaveLength(8);
+    });
   })
 })
