@@ -32,7 +32,7 @@ export default function FormNumericFilters() {
     } else {
       setAllFilters(INITIAL_FILTERS);
     }
-  }, [applyFilters]);
+  }, [applyFilters]); // eslint-disable-line
 
   const onClick = (event) => {
     event.preventDefault();
