@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import planetsContext from '../context/planetsContext';
 
 const INITIAL_FILTERS = [
@@ -10,13 +10,12 @@ const INITIAL_FILTERS = [
 ];
 
 export default function FormNumericFilters() {
-  const [allFilters, setAllFilters] = useState(INITIAL_FILTERS);
-
   const {
     numericFilters: {
       filters, filters: { parameter, operator, estimatedValue }, setNumericFilters,
     },
     applyFilters: { applyFilters, setApplyFilters },
+    allFilters: { allFilters, setAllFilters },
   } = useContext(planetsContext);
 
   const onChange = ({ target }) => {
@@ -33,18 +32,23 @@ export default function FormNumericFilters() {
     } else {
       setAllFilters(INITIAL_FILTERS);
     }
-  }, [applyFilters]); // eslint-disable-line
+  }, [applyFilters]);
 
   const onClick = (event) => {
     event.preventDefault();
     setApplyFilters([...applyFilters, { parameter, operator, estimatedValue }]);
+    setNumericFilters({
+      parameter: allFilters[0],
+      operator: 'maior que',
+      estimatedValue: '0',
+    });
   };
 
   return (
     <form>
       <select
         name="parameter"
-        value={ filters.parameter }
+        value={ parameter }
         onChange={ onChange }
         data-testid="column-filter"
       >
@@ -53,7 +57,7 @@ export default function FormNumericFilters() {
       </select>
       <select
         name="operator"
-        value={ filters.operator }
+        value={ operator }
         onChange={ onChange }
         data-testid="comparison-filter"
       >
@@ -63,7 +67,7 @@ export default function FormNumericFilters() {
       </select>
       <input
         name="estimatedValue"
-        value={ filters.estimatedValue }
+        value={ estimatedValue }
         onChange={ onChange }
         type="number"
         placeholder="Digite um valor estimado"

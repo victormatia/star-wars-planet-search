@@ -9,11 +9,20 @@ const initialsNumericFilters = {
   estimatedValue: '0',
 };
 
+const INITIAL_FILTERS = [
+  'population',
+  'orbital_period',
+  'diameter',
+  'rotation_period',
+  'surface_water',
+];
+
 export default function Provider({ children }) {
   const [planets, setPlanets] = useState([]);
   const [nameFilter, setNameFilter] = useState('');
   const [numericFilters, setNumericFilters] = useState(initialsNumericFilters);
   const [applyFilters, setApplyFilters] = useState([]);
+  const [allFilters, setAllFilters] = useState(INITIAL_FILTERS);
 
   useEffect(() => {
     const fetchAPI = async () => {
@@ -37,6 +46,10 @@ export default function Provider({ children }) {
     applyFilters: {
       applyFilters,
       setApplyFilters,
+    },
+    allFilters: {
+      allFilters,
+      setAllFilters,
     },
   };
 
