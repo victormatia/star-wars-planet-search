@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { getAllByTestId, getByTestId, render, screen, waitFor } from '@testing-library/react';
 import App from '../App';
 import mockFetchPlanets from './helpers/mockFetchPlanets';
 import userEvent from '@testing-library/user-event';
@@ -64,8 +64,8 @@ describe('Implementa casos de testes na aplicação', () => {
     render(<App />)
 
     const inputParameters = screen.getByTestId(/column-filter/i);
-    const diameterOption = screen.getByRole('option', { name: /diameter/i });
-    userEvent.selectOptions(inputParameters, diameterOption);
+    const diameterOption = screen.getAllByRole('option', { name: /diameter/i });
+    userEvent.selectOptions(inputParameters, diameterOption[0]);
 
     const inputOperators = screen.getByTestId(/comparison-filter/i);
     const biggerThanOption = screen.getByRole('option', { name: /maior que/i });
@@ -82,5 +82,24 @@ describe('Implementa casos de testes na aplicação', () => {
       const rows = screen.getAllByRole('row');
       expect(rows).toHaveLength(8);
     });
-  })
+  });
+
+  it('Testa se é possível aplicar ordenação a tabela', async() => {
+    render(<App />)
+
+    const selectParameters = screen.getByTestId('column-sort');
+    const rotationOption = screen.getAllByRole('option', { name: /rotation_period/i });
+    const ascRadio = screen.getByLabelText(/ascendente/i);
+    const dscRadio = screen.getByLabelText(/descendente/i);
+    
+    userEvent.selectOptions(selectParameters, rotationOption[1]);
+    
+    userEvent.click(dscRadio);
+    
+    await waitFor(() => {
+      const allNamesPlanets = screen.getAllByTestId(/planet-name/i);
+      const rows = screen.getAllByRole('row');
+      expect(rows).toHaveLength(11);
+    });
+  });
 })

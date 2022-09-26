@@ -17,12 +17,19 @@ const INITIAL_FILTERS = [
   'surface_water',
 ];
 
+const INITIAL_SORT = {
+  parameter: 'population',
+  sort: 'ASC',
+};
+
 export default function Provider({ children }) {
-  const [planets, setPlanets] = useState([]);
-  const [nameFilter, setNameFilter] = useState('');
-  const [numericFilters, setNumericFilters] = useState(initialsNumericFilters);
-  const [applyFilters, setApplyFilters] = useState([]);
-  const [allFilters, setAllFilters] = useState(INITIAL_FILTERS);
+  const [planets, setPlanets] = useState([]); // response da requisição
+  const [nameFilter, setNameFilter] = useState(''); // controlador do input de pesquisa por nome
+  const [numericFilters, setNumericFilters] = useState(initialsNumericFilters); // controlador do form de filtros numéricos
+  const [allFilters, setAllFilters] = useState(INITIAL_FILTERS); // array com todos os tipos de filtros numéricos
+  const [applyFilters, setApplyFilters] = useState([]); // array de filtros aplicados
+  const [sort, setSort] = useState(INITIAL_SORT); // controlador do form de ordenação
+  const [applySort, setApplySort] = useState([]); // ordenação aplicada;
 
   useEffect(() => {
     const fetchAPI = async () => {
@@ -43,13 +50,21 @@ export default function Provider({ children }) {
       filters: numericFilters,
       setNumericFilters,
     },
+    allFilters: {
+      allFilters,
+      setAllFilters,
+    },
     applyFilters: {
       applyFilters,
       setApplyFilters,
     },
-    allFilters: {
-      allFilters,
-      setAllFilters,
+    sort: {
+      sort,
+      setSort,
+    },
+    applySort: {
+      applySort,
+      setApplySort,
     },
   };
 
