@@ -27,11 +27,11 @@ export default function Table() {
         case 'menor que': {
           return Number(planet[curr.parameter]) < Number(curr.estimatedValue);
         }
-        case 'igual a': {
+        default: {
           return Number(planet[curr.parameter])
                   === Number(curr.estimatedValue);
         }
-        default: return acc;
+        // default: return acc;
         }
       })
     ), planetsArray)
@@ -90,29 +90,6 @@ export default function Table() {
     }
     return planets;
   };
-
-  // useEffect(() => {
-  //   if (applyFilters.length > 0 && name.length > 0) {
-  //     setRenderPlanets(filterByName(filterByNumericFilters(planets, applyFilters)));
-  //     return;
-  //   }
-  //   if (name.length > 0) {
-  //     console.log('rodouy');
-  //     setRenderPlanets(filterByName(renderPlanets));
-  //     return;
-  //   }
-  //   if (applyFilters.length > 0) {
-  //     setRenderPlanets(filterByNumericFilters(planets, applyFilters));
-  //     return;
-  //   }
-  //   if (applySort.length) {
-  //     const [{ parameter, sort }] = applySort;
-  //     setRenderPlanets(sortRenderPlanets(renderPlanets, parameter, sort));
-  //     return;
-  //   }
-
-  //   return setRenderPlanets(planets);
-  // }, [applyFilters, name, planets, applySort]); // eslint-disable-line
 
   return (
     <table>
